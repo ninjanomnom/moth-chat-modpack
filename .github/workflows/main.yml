@@ -24,6 +24,20 @@ jobs:
     - name: Zip release folder
       run: zip -r release.zip . -x ".git/*" ".github/*"
         
+    - name: Create a release (TEMP)
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        
+    - name: Print release url
+      run: echo ${{ steps.create_release.outputs.upload_url }}
+        
     - name: Upload a Release Asset
       uses: actions/upload-release-asset@v1.0.2
       env:
