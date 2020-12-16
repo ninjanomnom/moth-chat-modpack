@@ -13,8 +13,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
-    - name: Archive Release
-      uses: thedoctor0/zip-release@master
+    - name: Create release folder
+      run: rsync -arv --exclude='.git/' --exclude='.github/' --exclude='.gitignore' . ./release
+    
+    - name: Switch to Release Folder
+      run: |
+        cd release
+        ls -la
+        
+    - name: Zip release folder
+      run: zip -r release.zip . -x ".git/*" ".github/*"
+        
+    - name: Upload a Release Asset
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        filename: 'release.zip'
-        exclusions: '*.git* /*node_modules/* .editorconfig'
+        upload_url: https://uploads.github.com/repos/ninjanomnom/moth-chat-modpack/releases/tag/v1.1/assets?name=release.zip
+        asset_path: ./release.zip
+        asset_name: release.zip
+        asset_content_type: application/zip
