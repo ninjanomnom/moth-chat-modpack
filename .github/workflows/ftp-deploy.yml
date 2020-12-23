@@ -1,0 +1,26 @@
+# This is a basic workflow to help you get started with Actions
+
+name: ftp-deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download LFS Files
+        run: git lfs install && git lfs pull
+
+      - name: ftp-deploy
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          port: 21
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          exclude: "SoundFilters-0.8_for_1.7.X.jar"
